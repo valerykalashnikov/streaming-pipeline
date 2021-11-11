@@ -30,4 +30,10 @@ The durability of the service will be handled by some restart policy for example
 **Observability**
 
 Observability of the service will be handled by Prometheus with Alert manager to send alerts to Slack in case of any incident.
-Grafana will be used to display statistics about failures that could be used to calculate potential SLO / SLI. 
+Grafana will be used to display statistics about failures that could be used to calculate potential SLO / SLI.
+
+## Worker pool with Ceph storage
+
+<img src="./img/ceph-worker-pool.png" width="950">
+
+## Worker pool with message queue
