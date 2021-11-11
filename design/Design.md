@@ -1,4 +1,4 @@
-# Design document to demonstrate various options for transforming data got from text files
+# Demonstrating various options for processing large text files
 
 ## Background
 
