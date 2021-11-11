@@ -1,6 +1,4 @@
 # Demonstrating various options for processing large text files
-
-## Achitecture
 The idea of the pipelines is layed behind the philosophy of data flows. The data emmitter generates data (in our case files in a proper directories) than consumer process the data and collect them somewhere.
 
 <img src="./img/pipeline.png" width="670">
@@ -8,7 +6,7 @@ The idea of the pipelines is layed behind the philosophy of data flows. The data
 This idea could be implemented by some different ways
 <put glossary>
 
-### One piece of data (POD) with restart policy
+## One piece of data (POD) with restart policy
 Let's look into the simplest case. We assume that
 - service emitting the data and saving it to the files (emitter) located in the same space (VM, Kubernetes Pod, etc). 
 - emitter saves the files to virtual file system eg mounted to /tmp folder or any volume in the container - now it doesn't matter
