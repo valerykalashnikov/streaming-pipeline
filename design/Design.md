@@ -22,6 +22,7 @@ This idea could be implemented by some different ways
     - [Durability](#durability-2)
     - [Observability](#observability-2)
     - [Trade-ins](#trade-ins-2)
+  - [Bonus: HDFS + Spark](#bonus-hdfs--spark)
 ## One piece of data (POD) with restart policy
 Let's look into the simplest case. We assume that
 - service emitting the data and saving it to the files (emitter) located in the same space (VM, Kubernetes Pod, etc). 
@@ -130,3 +131,7 @@ Grafana will be used to display statistics about failures that could be used to 
 
 ### Trade-ins
 The solution could potentially solve the problem of system inconsystensy and quite durable. But the trade-in here is in eventually consystensy, that after consuming some resource, it will be displayed in a statistics not really realtime but...eventually.
+
+## Bonus: HDFS + Spark
+
+<img src="./img/hdfs_plus_spark.png" width="950">
