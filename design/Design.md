@@ -59,9 +59,15 @@ The potential bottlenecks are still Disk IO and potentially could be solved by p
 
 In case of having network-bloating we could only extend the bottleneck by changing hardware or by using the next option
 
+**Observability**
+
+Observability of the service will be handled by Prometheus with Alert manager to send alerts to Slack in case of any incident.
+Grafana will be used to display statistics about failures that could be used to calculate potential SLO / SLI.
+
 **Trade-ins**
 The solution is more scalabe and fault-taulerant and provides high availability.
 From the other hand the trade-in will be potential infrastructure overhead because of necessity to deploy / scale and support worker-services, Ceph cluster and fault-taulerant DBs. 
 In case of network is still bottleneck, we could forecast network overpricing in case of using public clouds,or pick the next option
 
 ## Worker pool with message queue
+<img src="./img/queue-worker-pool.png" width="950">
