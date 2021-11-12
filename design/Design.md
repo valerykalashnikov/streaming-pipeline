@@ -15,10 +15,13 @@ Let's look into the simplest case. We assume that
 The gathering of the data will be done by periodically scanning the file directory at the virtual filesystem of mounted volume (for example once an hour). The one interesting task is to handle only new files. That means we need to save state after every scanning of the directory. We will accumulate these data in memory and send it to the storage after every scanning.
 <img src="./img/pod-with-restart-policy.png" width="670">
 
-The logic of working with every state is:
+### Handling state
 - scan the whole directory in case of missing data about last scan.
 - If the data about last scanning exist, than finding the new files to scan by diffing the list of the files from the directory and list of the files from storage.
-- In case of having line number in the state data near the file name, it means that the consumer unexpectedly failed and we need to continue scanning from the next line.
+- In case of having line number in the state data near the file name, it means that the consumer unexpectedly failed and we need to continue scanning from the next line. It means that the program has been finished fully unexpectedly and was not handled by `SIGTER / SIGKILL` approach. It should be very rare and in such case it's statistically better to undercalculate rather overcalculating. I suppose that the consumed resources will be billed in future and for not decresing the Retention metric. We will not loose the client if we withdraw less than their expected rather than more. 
+
+<img src="./img/handling-state.png" width="330">
+
 
 **Potential bottlenecks**
 
@@ -41,7 +44,7 @@ If you need to manage scalability or the network becomes bottlenecks plese look 
 In case of necessity to improve scalability we could extend the previous scheme for using multiple workers. Not to handle multiple pieces of disks and keep the simplicity of using the shared one  we could pick some distributed storage like Ceph.
 
 But while introducing scalability we face with the problem of deduplicating data. For example if 2+ workers start processing the same file, the amount of incorrect aggregated data about consumed resource will dramatically increased.  
-It could be fixed by handling the state like we explained in the previous option: in case of having line number in the state data near the file name, it means that the consumer unexpectedly failed and we need to continue scanning from the next line.
+It could be fixed by handling the state like we explained in the "Handling state" section: in case of having line number in the state data near the file name, it means that the consumer unexpectedly failed and we need to continue scanning from the next line.
 
 <img src="./img/ceph-worker-pool.png" width="950">
 
