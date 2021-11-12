@@ -23,6 +23,7 @@ This idea could be implemented by some different ways
     - [Observability](#observability-2)
     - [Trade-ins](#trade-ins-2)
   - [Bonus: HDFS + Spark](#bonus-hdfs--spark)
+  - [Bonus2: bash + awk :smiley: :smiley: :smiley:](#bonus2-bash--awk-smiley-smiley-smiley)
 ## One piece of data (POD) with restart policy
 Let's look into the simplest case. We assume that
 - service emitting the data and saving it to the files (emitter) located in the same space (VM, Kubernetes Pod, etc). 
@@ -135,3 +136,6 @@ The solution could potentially solve the problem of system inconsystensy and qui
 ## Bonus: HDFS + Spark
 
 <img src="./img/hdfs_plus_spark.png" width="950">
+
+## Bonus2: bash + awk :smiley: :smiley: :smiley:
+`cat file1.txt file2.txt file3.txt file4.txt | awk '{a[1] += $2} END {for (i in a) print i,a[i]}' > mergedfile`
