@@ -63,9 +63,7 @@ It could be fixed by handling the state like we explained in the "Handling state
 <img src="./img/ceph-worker-pool.png" width="950">
 
 ### Handling state
-- scan the whole directory in case of missing data about last scan.
-- If the data about last scanning exist, than finding the new files to scan by diffing the list of the files from the directory and list of the files from storage.
-- In case of having line number in the state data near the file name, it means that the consumer unexpectedly failed and we need to continue scanning from the next line. It means that the program has been finished fully unexpectedly and was not handled by `SIGTER / SIGKILL` approach. It should be very rare and in such case it's statistically better to undercalculate rather overcalculating. I suppose that the consumed resources will be billed in future and for not decresing the Retention metric. We will not loose the client if we withdraw less than their expected rather than more. 
+Handling state the same as described [here](#handling-state)
 
 
 ### Durability
