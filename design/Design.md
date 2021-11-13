@@ -5,6 +5,7 @@ The idea of the pipelines is layed behind the philosophy of data flows. The data
 
 This idea could be implemented by some different ways
 - [Demonstrating various options for processing large text files](#demonstrating-various-options-for-processing-large-text-files)
+  - [Pure Golang implementation](#pure-golang-implementation)
   - [One piece of data (POD) with restart policy](#one-piece-of-data-pod-with-restart-policy)
     - [Handling state](#handling-state)
     - [Potential bottlenecks](#potential-bottlenecks)
@@ -24,6 +25,9 @@ This idea could be implemented by some different ways
     - [Trade-ins](#trade-ins-2)
   - [Bonus: HDFS + Spark](#bonus-hdfs--spark)
   - [Bonus2: bash + awk :smiley: :smiley: :smiley:](#bonus2-bash--awk-smiley-smiley-smiley)
+
+## Pure Golang implementation
+
 ## One piece of data (POD) with restart policy
 Let's look into the simplest case. We assume that
 - service emitting the data and saving it to the files (emitter) located in the same space (VM, Kubernetes Pod, etc). 
