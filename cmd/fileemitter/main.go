@@ -33,18 +33,16 @@ func main() {
 		log.Error("Cannot create directory for the files", err.Error)
 	}
 
-	for {
-		rand.Seed(time.Now().UnixNano())
-		fileSize := rand.Intn(int(maxSizeVal)-int(minSizeVal)) + int(minSizeVal)
-		log.Info("Creating file size of %d bytes \n", fileSize)
+	rand.Seed(time.Now().UnixNano())
+	fileSize := rand.Intn(int(maxSizeVal)-int(minSizeVal)) + int(minSizeVal)
 
-		filePath := buildFullPath(*output)
-		err := file.Generate(filePath, fileSize)
-		if err != nil {
-			log.Error("Error while generating new file", err)
-		}
-		log.Info("File succesfully generated")
+	filePath := buildFullPath(*output)
+	log.Info("Creating %s size of %s \n", filePath, units.HumanSize(float64(fileSize)))
+	err = file.Generate(filePath, fileSize)
+	if err != nil {
+		log.Error("Error while generating new file", err)
 	}
+	log.Info("File succesfully generated")
 }
 
 func buildFullPath(outputDir string) (filepath string) {
