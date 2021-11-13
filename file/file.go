@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+// Generate generates file with given filename with of a given size with a content like "123 12345".
+// sizeBytes is intentionally in int because we don't have any plans to generate Terabytes of files.
 func Generate(filename string, sizeBytes int) error {
 	isExist, err := fileExists(filename)
 	if err != nil {
