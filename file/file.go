@@ -1,12 +1,20 @@
 package file
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
 	"os"
 	"time"
 )
+
+type ProcessingOutput struct {
+	Filename string
+	Err      error
+}
 
 // Generate generates file with given filename with of a given size with a content like "123 12345".
 // sizeBytes is intentionally in int because we don't have any plans to generate Terabytes of files.
@@ -36,6 +44,33 @@ func Generate(filename string, sizeBytes int) error {
 	}
 
 	return err
+}
+
+func IOReadDir(root string) ([]string, error) {
+	var files []string
+	fileInfo, err := ioutil.ReadDir(root)
+	if err != nil {
+		return files, err
+	}
+	for _, file := range fileInfo {
+		files = append(files, file.Name())
+	}
+	return files, nil
+}
+
+func ProcessLineByLine(filename string, linesCh chan string, outputCh chan ProcessingOutput) {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		linesCh <- scanner.Text()
+	}
+	close(linesCh) // close causes range on channel to break out of loop
+	outputCh <- ProcessingOutput{Filename: filename, Err: scanner.Err()}
 }
 
 func generateRand(min, max int) int {

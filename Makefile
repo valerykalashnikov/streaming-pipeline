@@ -11,3 +11,7 @@ env-start:
 build-fileemitter:
 	@echo "Building file-emitter"
 	go build -o bin/file-emitter github.com/valerykalashnikov/streaming-pipeline/cmd/fileemitter
+
+build-publisher:
+	@echo "building publisher"
+	go build -o ./bin/publisher github.com/valerykalashnikov/streaming-pipeline/cmd/publisher
