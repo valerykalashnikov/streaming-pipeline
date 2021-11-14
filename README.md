@@ -13,6 +13,9 @@ Compiled binaries are located in `./bin`
 ## How to run all unit tests
 `make test-unit`
 
+## How to run an environment
+`make env-start`
+
 ## File emitter service
 Command line service to generate a file randomly in a range from some megabytes to some gigabytes. The format of the record in a file is "123 12345".
 
