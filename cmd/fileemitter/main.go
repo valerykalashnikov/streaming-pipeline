@@ -28,6 +28,10 @@ func main() {
 		log.Error("Cannot convert max-size parameter", err.Error)
 	}
 
+	if minSizeVal > maxSizeVal {
+		log.Error("min-size cannot be higher than maxsize")
+	}
+
 	err = os.MkdirAll(*output, os.ModePerm)
 	if err != nil {
 		log.Error("Cannot create directory for the files", err.Error)
