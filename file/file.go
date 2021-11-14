@@ -1,11 +1,9 @@
 package file
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"os"
 	"time"
@@ -56,21 +54,6 @@ func IOReadDir(root string) ([]string, error) {
 		files = append(files, file.Name())
 	}
 	return files, nil
-}
-
-func ProcessLineByLine(filename string, linesCh chan string, outputCh chan ProcessingOutput) {
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		linesCh <- scanner.Text()
-	}
-	close(linesCh) // close causes range on channel to break out of loop
-	outputCh <- ProcessingOutput{Filename: filename, Err: scanner.Err()}
 }
 
 func generateRand(min, max int) int {

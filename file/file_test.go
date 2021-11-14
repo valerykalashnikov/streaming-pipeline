@@ -1,7 +1,6 @@
 package file_test
 
 import (
-	"log"
 	"os"
 	"testing"
 
@@ -45,35 +44,4 @@ func TestIOReadDir(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, fileList)
 	assert.Equal(t, "1234", fileList[0])
-}
-
-func TestProcessLineByLine(t *testing.T) {
-	err := os.MkdirAll("./test", os.ModePerm)
-	require.NoError(t, err)
-	filename := "./test/12345"
-	defer func() {
-		os.Remove(filename)
-		os.Remove("./test")
-	}()
-	fileSize := 11
-	err = file.Generate(filename, fileSize)
-	require.NoError(t, err)
-
-	linesCh := make(chan string)
-	outputCh := make(chan file.ProcessingOutput)
-
-	var lines []string
-
-	go file.ProcessLineByLine(filename, linesCh, outputCh)
-
-	for line := range linesCh {
-		lines = append(lines, line)
-	}
-
-	out := <-outputCh
-	if out.Err != nil {
-		log.Fatal("unexpected error ", err)
-	}
-
-	assert.NotEmpty(t, lines)
 }

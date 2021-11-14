@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"os"
 
 	"github.com/valerykalashnikov/streaming-pipeline/file"
 	"github.com/valerykalashnikov/streaming-pipeline/log"
@@ -15,23 +17,17 @@ func main() {
 	}
 
 	for _, filename := range fileList {
-		linesCh := make(chan string)
-		outputCh := make(chan file.ProcessingOutput)
-		// yes, workaround for spawning goroutines in a for-loop
-		filename := *output + "/" + filename
-
-		go file.ProcessLineByLine(filename, linesCh, outputCh)
-		for line := range linesCh {
-			log.Info(line)
+		filepath := *output + "/" + filename
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal(err)
 		}
-		out := <-outputCh
-		log.Info("dkdkdkdkdkdkdkkdkdkdkdkdk", out.Filename)
-		if out.Err != nil {
-			log.Fatal(out.Err)
-		}
+		defer file.Close()
 
-		// if err := <-readerrCh; err != nil {
-		// 	log.Fatal(err)
-		// }
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			log.Info(scanner.Text())
+		}
+		log.Info(filename)
 	}
 }
