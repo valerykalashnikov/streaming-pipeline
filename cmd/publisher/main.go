@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"context"
 	"flag"
+	"net/http"
 	"os"
 
+	"github.com/adjust/rmq/v4"
 	"github.com/jasonlvhit/gocron"
 	"github.com/valerykalashnikov/streaming-pipeline/file"
 	"github.com/valerykalashnikov/streaming-pipeline/log"
@@ -16,20 +18,42 @@ func main() {
 	forceScan := flag.Bool("force-scan", false, "!!!Use on your own risk!!! This value is used to remove the state from redis and start scanning from the beginning.")
 	daemonize := flag.Bool("d", false, "This value is used to process files and then daemonize the process to rescan the folder once an hour")
 	flag.Parse()
+	go func() {
+		publishing(output, *&forceScan)
 
-	publishing(output, *&forceScan)
+		if *daemonize == true {
+			log.Info("Files processing will be running then once an hour")
+			gocron.Every(1).Hour().Do(func() {
+				forceScan := false
+				publishing(output, &forceScan)
+			})
+			<-gocron.Start()
+		}
+	}()
 
-	if *daemonize == true {
-		log.Info("Files processing will be running then once an hour")
-		gocron.Every(1).Hour().Do(func() {
-			forceScan := false
-			publishing(output, &forceScan)
-		})
-		<-gocron.Start()
+	connection, err := rmq.OpenConnection("dashboard", "tcp", "localhost:6379", 2, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	http.Handle("/overview", NewDashboardHandler(connection))
+	log.Info("Dashboard is rendered on http://localhost:3333/overview")
+	if err := http.ListenAndServe(":3333", nil); err != nil {
+		panic(err)
 	}
 }
 
 func publishing(output *string, forceScan *bool) {
+
+	connection, err := rmq.OpenConnection("publisher", "tcp", "localhost:6379", 2, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := connection.OpenQueue("data")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fileList, err := file.IOReadDir(*output)
 	if err != nil {
 		log.Error("Unable to read file list to process", err.Error())
@@ -64,11 +88,13 @@ func publishing(output *string, forceScan *bool) {
 
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
-			log.Info(scanner.Text())
+			if err := data.Publish(scanner.Text()); err != nil {
+				log.Info("Failed to publish: %s", err)
+			}
 		}
 		err = rdb.AddFilename(ctx, filename)
 	}
-	log.Info("successfully processed %v", filesToProcess)
+	log.Info("Successfully processed %v", filesToProcess)
 }
 
 func difference(a, b []string) []string {
