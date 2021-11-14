@@ -6,7 +6,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-const dbFileName = "processed_files"
+const processedFilesListName = "processed_files"
 
 type RedisClient struct {
 	client *redis.Client
@@ -24,9 +24,13 @@ func NewRedisClient() *RedisClient {
 }
 
 func (rc *RedisClient) AddFilename(ctx context.Context, filename string) error {
-	return rc.client.LPush(ctx, dbFileName, filename).Err()
+	return rc.client.LPush(ctx, processedFilesListName, filename).Err()
 }
 
 func (rc *RedisClient) GetProcessedFilesList(ctx context.Context) ([]string, error) {
-	return rc.client.LRange(ctx, dbFileName, 0, -1).Result()
+	return rc.client.LRange(ctx, processedFilesListName, 0, -1).Result()
+}
+
+func (rc *RedisClient) RemoveState(ctx context.Context) error {
+	return rc.client.Del(ctx, processedFilesListName).Err()
 }

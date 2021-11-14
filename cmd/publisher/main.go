@@ -13,15 +13,23 @@ import (
 
 func main() {
 	output := flag.String("out", "/tmp/fileemitter", "The folder to put generated files")
+	forceScan := flag.Bool("force-scan", false, "!!!Use on your own risk!!! This value is used to remove the state from redis and start scanning from the beginning.")
+	daemonize := flag.Bool("d", false, "This value is used to process files and then daemonize the process to rescan the folder once an hour")
 	flag.Parse()
 
-	publishing(output)
+	publishing(output, *&forceScan)
 
-	gocron.Every(1).Hour().Do(func() { publishing(output) })
-	<-gocron.Start()
+	if *daemonize == true {
+		log.Info("Files processing will be running then once an hour")
+		gocron.Every(1).Hour().Do(func() {
+			forceScan := false
+			publishing(output, &forceScan)
+		})
+		<-gocron.Start()
+	}
 }
 
-func publishing(output *string) {
+func publishing(output *string, forceScan *bool) {
 	fileList, err := file.IOReadDir(*output)
 	if err != nil {
 		log.Error("Unable to read file list to process", err.Error())
@@ -29,6 +37,14 @@ func publishing(output *string) {
 
 	var ctx = context.Background()
 	rdb := NewRedisClient()
+
+	if *forceScan == true {
+		err := rdb.RemoveState(ctx)
+		if err != nil {
+			log.Error("unable to remove state,", err)
+		}
+		log.Info("!!!processing files with --force-scan!!!")
+	}
 
 	alreadyProcessedList, err := rdb.GetProcessedFilesList(ctx)
 	if err != nil {
