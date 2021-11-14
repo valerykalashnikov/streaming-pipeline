@@ -1,7 +1,14 @@
 # streaming-pipeline
 
+The actual implementation of a streaming files pipeline explained [here](https://github.com/valerykalashnikov/streaming-pipeline/blob/master/design/Design.md#worker-pool-with-message-queue)
+
 ## Repository structure
-The repository is a monorepo with a source code of the services located in the `./cmd` directory and compiled binaries located in `./bin`
+The repository is a monorepo with a source code of the services located in the `./cmd` directory.It contains of
+  - [file emitter service](#file-emitter-service)
+  - [publisher service](#publisher-service)
+  - [consumer service](#consumer-service)
+  
+Compiled binaries are located in `./bin`
 
 ## How to run all unit tests
 `make test-unit`
@@ -23,3 +30,7 @@ And the binary will be put into the `./bin` directory
 | --min-size=10MB | 10MB            | 2MB              |
 | --max-size=3GB  | 3GB             | 10MB             |
 | --out=/tmp/files| /tmp/files      | /tmp/fileemitter |
+
+## Publisher service
+
+## Consumer service
