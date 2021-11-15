@@ -57,3 +57,24 @@ Then run `./bin/publisher`
 
 
 ## Consumer service
+The service consuming the data from queue and saves it to Postgres database in aggregated format.
+
+### How to build
+`make build-consumer`
+
+And the binary will be put into the `./bin` directory
+
+### How to run
+Run `make env-start` if it was not running before.
+Then run `./bin/consumer` with options from Env-variables.
+Example for running locally `DB_USER=stats DB_NAME=stats POSTGRES_ENV_PASSWORD=pgpwd4stats ./bin/consumer`
+
+### Env variables options
+| Parsed argments      | Resulting value | Defaults         |
+| -----------          | -----------     |----------        |
+| DB_USER=stats        | stats           | empty            |
+| DB_NAME=stats        | true            | empty            |
+| DB_HOST=127.0.0.1    | 127.0.0.1       | empty            |
+| DB_PORT=5432         | 5432            | empty            |
+| POSTGRES_ENV_PASSWORD| password        | empty            |
+| POSTGRES_ENV_PASSWORD| password        | empty            |

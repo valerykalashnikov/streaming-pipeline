@@ -10,5 +10,7 @@ services:
       POSTGRES_DB: "stats"
       POSTGRES_USER: "stats"
       POSTGRES_PASSWORD: "pgpwd4stats"
+    volumes:
+      - ./db/consumer_db.sql:/docker-entrypoint-initdb.d/db.sql
     ports:
       - "5432:5432"

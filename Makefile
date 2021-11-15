@@ -13,5 +13,13 @@ build-fileemitter:
 	go build -o bin/file-emitter github.com/valerykalashnikov/streaming-pipeline/cmd/fileemitter
 
 build-publisher:
-	@echo "building publisher"
+	@echo "Building publisher"
 	go build -o ./bin/publisher github.com/valerykalashnikov/streaming-pipeline/cmd/publisher
+
+build-consumer:
+	@echo "Building consumer"
+	go build -o ./bin/consumer github.com/valerykalashnikov/streaming-pipeline/cmd/consumer
+consumer-setupdb:
+setupdb:
+	@echo "Setting up consumer database..."
+	psql -U postgres stats < cmd/consumer/db/schema.sql
