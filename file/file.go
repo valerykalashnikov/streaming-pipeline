@@ -26,6 +26,7 @@ func Generate(filename string, sizeBytes int) error {
 	}
 
 	f, err := os.Create(filename)
+	defer f.Close()
 	if err != nil {
 		return err
 	}
