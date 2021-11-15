@@ -4,9 +4,16 @@ test-unit:
 	@echo "Running tests..."
 	go test $(PACKAGES)
 
+test-e2e:
+	@echo "Running e2e test..."
+	./e2e.sh
+
 env-start:
 	@echo "Running an environment..."
-	docker compose up
+	docker compose up -d
+env-stop:
+	@echo "Stop all containers"
+	docker compose down
 
 build-fileemitter:
 	@echo "Building file-emitter"
@@ -19,7 +26,5 @@ build-publisher:
 build-consumer:
 	@echo "Building consumer"
 	go build -o ./bin/consumer github.com/valerykalashnikov/streaming-pipeline/cmd/consumer
-consumer-setupdb:
-setupdb:
-	@echo "Setting up consumer database..."
-	psql -U postgres stats < cmd/consumer/db/schema.sql
+
+build-all: build-fileemitter build-publisher build-consumer
