@@ -15,6 +15,11 @@ env-stop:
 	@echo "Stop all containers"
 	docker compose down
 
+dashboard-start:
+	@echo "Running dashboard"
+	go build -o ./bin/dashboard github.com/valerykalashnikov/streaming-pipeline/cmd/dashboard
+	./bin/dashboard
+
 build-fileemitter:
 	@echo "Building file-emitter"
 	go build -o bin/file-emitter github.com/valerykalashnikov/streaming-pipeline/cmd/fileemitter

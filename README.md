@@ -21,6 +21,11 @@ Compiled binaries are located in `./bin`
 ## How to run e2e
 `make test-e2e`
 
+## How to observe dashboard
+Dashboard can be used to observe the status of processing - the amount of ready, rejected or acked items
+
+To run it just type `make dashboard-start` and go to `http://localhost:3333/overview` in your browser
+
 ## File emitter service
 Command line service to generate a file randomly in a range from some megabytes to some gigabytes. The format of the record in a file is "123 12345".
 

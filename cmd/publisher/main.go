@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"flag"
-	"net/http"
 	"os"
 
 	"github.com/adjust/rmq/v4"
@@ -18,28 +17,18 @@ func main() {
 	forceScan := flag.Bool("force-scan", false, "!!!Use on your own risk!!! This value is used to remove the state from redis and start scanning from the beginning.")
 	daemonize := flag.Bool("d", false, "This value is used to process files and then daemonize the process to rescan the folder once an hour")
 	flag.Parse()
-	go func() {
-		publishing(output, *&forceScan)
 
-		if *daemonize == true {
-			log.Info("Files processing will be running then once an hour")
-			gocron.Every(1).Hour().Do(func() {
-				forceScan := false
-				publishing(output, &forceScan)
-			})
-			<-gocron.Start()
-		}
-	}()
+	publishing(output, *&forceScan)
 
-	connection, err := rmq.OpenConnection("dashboard", "tcp", "localhost:6379", 2, nil)
-	if err != nil {
-		log.Fatal(err)
+	if *daemonize == true {
+		log.Info("Files processing will be running then once an hour")
+		gocron.Every(1).Hour().Do(func() {
+			forceScan := false
+			publishing(output, &forceScan)
+		})
+		<-gocron.Start()
 	}
-	http.Handle("/overview", NewDashboardHandler(connection))
-	log.Info("Dashboard is rendered on http://localhost:3333/overview")
-	if err := http.ListenAndServe(":3333", nil); err != nil {
-		panic(err)
-	}
+
 }
 
 func publishing(output *string, forceScan *bool) {
