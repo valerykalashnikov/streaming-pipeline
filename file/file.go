@@ -26,10 +26,12 @@ func Generate(filename string, sizeBytes int) error {
 	}
 
 	f, err := os.Create(filename)
-	defer f.Close()
+
 	if err != nil {
 		return err
 	}
+
+	defer f.Close()
 	for {
 		consumerId := generateRand(1, 10000)
 		resourceConsumed := generateRand(1, 100000)

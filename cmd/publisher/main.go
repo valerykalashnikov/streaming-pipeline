@@ -18,9 +18,9 @@ func main() {
 	daemonize := flag.Bool("d", false, "This value is used to process files and then daemonize the process to rescan the folder once an hour")
 	flag.Parse()
 
-	publishing(output, *&forceScan)
+	publishing(output, forceScan)
 
-	if *daemonize == true {
+	if *daemonize {
 		log.Info("Files processing will be running then once an hour")
 		gocron.Every(1).Hour().Do(func() {
 			forceScan := false
@@ -51,7 +51,7 @@ func publishing(output *string, forceScan *bool) {
 	var ctx = context.Background()
 	rdb := NewRedisClient()
 
-	if *forceScan == true {
+	if *forceScan {
 		err := rdb.RemoveState(ctx)
 		if err != nil {
 			log.Error("unable to remove state,", err)
@@ -82,6 +82,9 @@ func publishing(output *string, forceScan *bool) {
 			}
 		}
 		err = rdb.AddFilename(ctx, filename)
+		if err != nil {
+			log.Error("error while adding filename to redis %v", err)
+		}
 	}
 	log.Info("Successfully processed %v", filesToProcess)
 }

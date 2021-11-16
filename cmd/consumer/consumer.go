@@ -32,7 +32,7 @@ func (consumer *Consumer) Consume(delivery rmq.Delivery) {
 
 	consumer.count++
 	if consumer.count%reportBatchSize == 0 {
-		duration := time.Now().Sub(consumer.before)
+		duration := time.Since(consumer.before)
 		consumer.before = time.Now()
 		perSecond := time.Second / (duration / reportBatchSize)
 		log.Info("%s consumed %d %s %d", consumer.name, consumer.count, payload, perSecond)
