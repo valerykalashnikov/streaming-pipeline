@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/adjust/rmq/v4"
 	"github.com/jasonlvhit/gocron"
+	"github.com/valerykalashnikov/streaming-pipeline/db"
 	"github.com/valerykalashnikov/streaming-pipeline/file"
 	"github.com/valerykalashnikov/streaming-pipeline/log"
 )
@@ -16,24 +18,27 @@ func main() {
 	output := flag.String("out", "/tmp/fileemitter", "The folder to put generated files")
 	forceScan := flag.Bool("force-scan", false, "!!!Use on your own risk!!! This value is used to remove the state from redis and start scanning from the beginning.")
 	daemonize := flag.Bool("d", false, "This value is used to process files and then daemonize the process to rescan the folder once an hour")
+	period := flag.Int64("period", 10, "This value is used to set up the period of scanning")
 	flag.Parse()
 
-	publishing(output, forceScan)
-
 	if *daemonize {
-		log.Info("Files processing will be running then once an hour")
-		gocron.Every(1).Hour().Do(func() {
+		log.Info(fmt.Sprintf("Files processing will be running then once a %d minutes", *period))
+		gocron.Every(uint64(*period)).Minute().Do(func() {
 			forceScan := false
 			publishing(output, &forceScan)
 		})
 		<-gocron.Start()
+	} else {
+		publishing(output, forceScan)
 	}
 
 }
 
 func publishing(output *string, forceScan *bool) {
 
-	connection, err := rmq.OpenConnection("publisher", "tcp", "localhost:6379", 2, nil)
+	redisAddr := db.GetRedisConnection()
+
+	connection, err := rmq.OpenConnection("publisher", "tcp", redisAddr, 2, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +54,8 @@ func publishing(output *string, forceScan *bool) {
 	}
 
 	var ctx = context.Background()
-	rdb := NewRedisClient()
+
+	rdb := NewRedisClient(redisAddr)
 
 	if *forceScan {
 		err := rdb.RemoveState(ctx)

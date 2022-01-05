@@ -32,4 +32,14 @@ build-consumer:
 	@echo "Building consumer"
 	go build -o ./bin/consumer github.com/valerykalashnikov/streaming-pipeline/cmd/consumer
 
+build-docker-all:
+	@echo "Building docker image for emitter"
+	docker build -t  valerykalashnikov/fileemitter -f Dockerfile.emitter .
+
+	@echo "Building docker image for publisher"
+	docker build -t  valerykalashnikov/publisher -f Dockerfile.publisher .
+
+	@echo "Building docker image for consumer"
+	docker build -t  valerykalashnikov/consumer -f Dockerfile.consumer .
+
 build-all: build-fileemitter build-publisher build-consumer

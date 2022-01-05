@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  # TODO: done only for development purposes, use services + statefulsets in future
+  REDIS_HOST: host.docker.internal

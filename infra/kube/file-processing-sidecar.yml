@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: file-processing
+spec:
+  containers:
+  - image: valerykalashnikov/fileemitter
+    name: file-emitter
+    args: ["-d"]
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: tmpfiles-volume
+      mountPath: /tmp/fileemitter
+  - image: valerykalashnikov/publisher
+    name: file-publisher
+    args: ["-d"]
+    imagePullPolicy: IfNotPresent
+    envFrom:
+    - configMapRef:
+        name: redis-config
+    volumeMounts:
+    - name: tmpfiles-volume
+      mountPath: /tmp/fileemitter
+  volumes:
+    - name: tmpfiles-volume
+      emptyDir: {}
