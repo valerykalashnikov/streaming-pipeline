@@ -74,7 +74,8 @@ func createRMQConnection(errChan chan error) (rmq.Connection, error) {
 	rand.Read(b)
 
 	connName := "consumer" + fmt.Sprintf("%x", b)[:5]
-	return rmq.OpenConnection(connName, "tcp", "host.docker.internal:6379", 2, errChan)
+	addr := db.GetRedisConnection()
+	return rmq.OpenConnection(connName, "tcp", addr, 2, errChan)
 }
 
 func logErrors(errChan <-chan error) {

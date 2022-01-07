@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: redis-config
 data:
-  # TODO: done only for development purposes, use services + statefulsets in future
-  REDIS_HOST: host.docker.internal
+  REDIS_HOST: redis-pod.redis-h.databases.svc.cluster.local

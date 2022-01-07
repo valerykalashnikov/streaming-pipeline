@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: databases
+  labels:
+    app: redis
+spec:
+  containers:
+  - name: redis
+    image: redis
+    command:
+    - redis-server
+    ports:
+    - containerPort: 6379
+  subdomain: redis-h
+  hostname: redis-pod
+  restartPolicy: Never

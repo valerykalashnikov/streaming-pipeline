@@ -18,7 +18,7 @@ spec:
             name: postgres-config
         - configMapRef:
             name: redis-config
-  replicas: 150
+  replicas: 1
   selector:
     matchLabels:
       app: consumer

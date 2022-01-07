@@ -3,8 +3,7 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  DB_HOST: host.docker.internal
+  DB_HOST: postgres-pod.postgres-h.databases.svc.cluster.local
   DB_USER: stats
   DB_NAME: stats
   POSTGRES_ENV_PASSWORD: pgpwd4stats
-
