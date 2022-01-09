@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: file-emitter-publisher
+  namespace: apps
 spec:
   containers:
   - image: valerykalashnikov/fileemitter
@@ -17,7 +18,7 @@ spec:
     imagePullPolicy: IfNotPresent
     envFrom:
     - configMapRef:
-        name: redis-config
+        name: apps-redis-config
     volumeMounts:
     - name: tmpfiles-volume
       mountPath: /tmp/fileemitter
