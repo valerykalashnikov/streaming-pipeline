@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: file-processing
+  name: file-emitter-publisher
 spec:
   containers:
   - image: valerykalashnikov/fileemitter

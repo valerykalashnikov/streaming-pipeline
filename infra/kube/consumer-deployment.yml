@@ -15,9 +15,9 @@ spec:
         imagePullPolicy: IfNotPresent
         envFrom: 
         - configMapRef:
-            name: postgres-config
+            name: apps-postgres-config
         - configMapRef:
-            name: redis-config
+            name: apps-redis-config
   replicas: 1
   selector:
     matchLabels:

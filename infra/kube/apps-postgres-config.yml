@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: apps-postgres-config
 data:
   DB_HOST: postgres-pod.postgres-h.databases.svc.cluster.local
   DB_USER: stats
