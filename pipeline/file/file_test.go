@@ -4,10 +4,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/valerykalashnikov/streaming-pipeline/file"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/file"
 )
 
 func TestGenerate(t *testing.T) {

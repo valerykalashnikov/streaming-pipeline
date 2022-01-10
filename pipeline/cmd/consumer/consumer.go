@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/adjust/rmq/v4"
-	"github.com/valerykalashnikov/streaming-pipeline/log"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/log"
 )
 
 type Consumer struct {

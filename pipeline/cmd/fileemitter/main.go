@@ -9,8 +9,8 @@ import (
 	units "github.com/docker/go-units"
 	petname "github.com/dustinkirkland/golang-petname"
 
-	"github.com/valerykalashnikov/streaming-pipeline/file"
-	"github.com/valerykalashnikov/streaming-pipeline/log"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/file"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/log"
 )
 
 func main() {

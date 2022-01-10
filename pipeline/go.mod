@@ -1,14 +1,12 @@
-module github.com/valerykalashnikov/streaming-pipeline
+module github.com/valerykalashnikov/streaming-pipeline/pipeline
 
 go 1.17
+
 
 require (
 	github.com/docker/go-units v0.4.0
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
 	github.com/stretchr/testify v1.7.0
-)
-
-require (
 	github.com/adjust/rmq/v4 v4.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

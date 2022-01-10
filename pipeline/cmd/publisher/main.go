@@ -9,9 +9,9 @@ import (
 
 	"github.com/adjust/rmq/v4"
 	"github.com/jasonlvhit/gocron"
-	"github.com/valerykalashnikov/streaming-pipeline/db"
-	"github.com/valerykalashnikov/streaming-pipeline/file"
-	"github.com/valerykalashnikov/streaming-pipeline/log"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/db"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/file"
+	"github.com/valerykalashnikov/streaming-pipeline/pipeline/log"
 )
 
 func main() {
