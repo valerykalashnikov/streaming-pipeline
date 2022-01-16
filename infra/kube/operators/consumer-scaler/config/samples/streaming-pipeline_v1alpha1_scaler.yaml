@@ -1,0 +1,30 @@
+apiVersion: streaming-pipeline.my.domain/v1alpha1
+kind: Scaler
+metadata:
+  name: scaler-sample
+  namespace: apps
+spec:
+  deployment:
+    metadata:
+      name: consumer-deployment
+    spec:
+      template:
+        metadata:
+          name: consumer-pod
+          labels:
+            app: consumer
+        spec:
+          containers:
+          - name: consumer
+            image: valerykalashnikov/consumer
+            imagePullPolicy: IfNotPresent
+            envFrom: 
+            - configMapRef:
+                name: apps-postgres-config
+            - configMapRef:
+                name: apps-redis-config
+      replicas: 1
+      selector:
+        matchLabels:
+          app: consumer  
+  brokerAddress: address
