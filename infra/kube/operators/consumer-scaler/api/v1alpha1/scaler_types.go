@@ -26,8 +26,14 @@ import (
 
 // ScalerSpec defines the desired state of Scaler
 type ScalerSpec struct {
-	Deployment    DeploymentTemplateSpec `json:"deployment"`
-	BrokerAddress string                 `json:"brokerAddress"`
+	Deployment    Deployment `json:"deployment"`
+	BrokerAddress string     `json:"brokerAddress"`
+	Period        string     `json:"period"`
+}
+
+type Deployment struct {
+	Name         string `json:"name"`
+	MaxConsumers int32  `json:"maxConsumers"`
 }
 
 type DeploymentTemplateSpec struct {

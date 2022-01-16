@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	pipev1alhpa1 "github.com/valerykalashnikov/streaming-pipeline/infra/kube/operators/consumer-scaler/api/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
@@ -53,8 +54,8 @@ func (r *ScalerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	log := log.FromContext(ctx).WithValues("Scaler", req.NamespacedName)
 
 	// Fetch the Traveller instance
-	instance := &pipev1alhpa1.Scaler{}
-	err := r.Get(context.TODO(), req.NamespacedName, instance)
+	scaler := &pipev1alhpa1.Scaler{}
+	err := r.Get(context.TODO(), req.NamespacedName, scaler)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
@@ -68,19 +69,28 @@ func (r *ScalerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 	// Check if this Deployment already exists
 	found := &appsv1.Deployment{}
-	err = r.Get(context.TODO(), types.NamespacedName{Name: instance.Name, Namespace: instance.Namespace}, found)
-	var result *reconcile.Result
-	result, err = r.ensureDeployment(req, instance, r.backendDeployment(instance))
-	if result != nil {
-		log.Error(err, "Deployment Not ready")
-		return *result, err
+	err = r.Get(context.TODO(), types.NamespacedName{
+		Name:      scaler.Spec.Deployment.Name,
+		Namespace: scaler.Namespace,
+	}, found)
+
+	if err != nil {
+		log.Error(err, "Deployment Not ready - requeue")
+		return ctrl.Result{}, err
 	}
 
-	// Deployment and Service already exists - don't requeue
-	log.Info("Skip reconcile: Deployment already exists",
-		"Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+	err = r.scaleDeployment(found, scaler.Spec.Deployment.MaxConsumers)
 
-	return ctrl.Result{}, nil
+	if err != nil {
+		log.Error(err, "Deployment Not ready - trying again")
+		return ctrl.Result{}, err
+	}
+
+	// Scale up and down every 15 minutes
+	result := ctrl.Result{
+		RequeueAfter: 15 * time.Minute,
+	}
+	return result, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
