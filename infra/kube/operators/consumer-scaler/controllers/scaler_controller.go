@@ -18,9 +18,13 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"math/rand"
 	"time"
 
+	"github.com/adjust/rmq"
 	pipev1alhpa1 "github.com/valerykalashnikov/streaming-pipeline/infra/kube/operators/consumer-scaler/api/v1alpha1"
+	"github.com/valerykalashnikov/streaming-pipeline/infra/kube/operators/consumer-scaler/consumer"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -69,23 +73,21 @@ func (r *ScalerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 	// Check if this Deployment already exists
 	found := &appsv1.Deployment{}
+
 	err = r.Get(context.TODO(), types.NamespacedName{
 		Name:      scaler.Spec.Deployment.Name,
 		Namespace: scaler.Namespace,
 	}, found)
-
 	if err != nil {
 		log.Error(err, "Deployment Not ready - requeue")
 		return ctrl.Result{}, err
 	}
-
-	err = r.scaleDeployment(found, scaler.Spec.Deployment.MaxConsumers)
-
+	calc := consumer.NewCalculator(scaler.Spec.Queue, r.createRMQConnection(scaler))
+	err = r.scaleDeployment(found, calc, scaler.Spec.Deployment.MaxConsumers)
 	if err != nil {
 		log.Error(err, "Deployment Not ready - trying again")
 		return ctrl.Result{}, err
 	}
-
 	// Scale up and down every 15 minutes
 	result := ctrl.Result{
 		RequeueAfter: 15 * time.Minute,
@@ -98,4 +100,15 @@ func (r *ScalerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&pipev1alhpa1.Scaler{}).
 		Complete(r)
+}
+
+func (r *ScalerReconciler) createRMQConnection(scaler *pipev1alhpa1.Scaler) rmq.Connection {
+	rand.Seed(time.Now().UnixNano())
+	// generate the postfix with a lenght of 5 bytes
+	b := make([]byte, 5)
+	rand.Read(b)
+
+	connName := "scaler" + fmt.Sprintf("%x", b)[:5]
+
+	return rmq.OpenConnection(connName, "tcp", scaler.Spec.BrokerAddress, 2)
 }

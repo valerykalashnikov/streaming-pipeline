@@ -8,5 +8,7 @@ spec:
     name: consumer-deployment
     maxConsumers: 10
   brokerAddress: address
+  queue: data
   period: 10m
+  
   

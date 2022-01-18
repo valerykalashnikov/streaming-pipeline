@@ -29,6 +29,7 @@ type ScalerSpec struct {
 	Deployment    Deployment `json:"deployment"`
 	BrokerAddress string     `json:"brokerAddress"`
 	Period        string     `json:"period"`
+	Queue         string     `json:"queue"`
 }
 
 type Deployment struct {

@@ -17,20 +17,20 @@ env-stop:
 
 dashboard-start:
 	@echo "Running dashboard"
-	go build -o ./bin/dashboard github.com/valerykalashnikov/streaming-pipeline/cmd/dashboard
+	go build -o ./bin/dashboard github.com/valerykalashnikov/streaming-pipeline/pipeline/cmd/dashboard
 	./bin/dashboard
 
 build-fileemitter:
 	@echo "Building file-emitter"
-	go build -o bin/file-emitter github.com/valerykalashnikov/streaming-pipeline/cmd/fileemitter
+	go build -o bin/file-emitter github.com/valerykalashnikov/streaming-pipeline/pipeline/cmd/fileemitter
 
 build-publisher:
 	@echo "Building publisher"
-	go build -o ./bin/publisher github.com/valerykalashnikov/streaming-pipeline/cmd/publisher
+	go build -o ./bin/publisher github.com/valerykalashnikov/streaming-pipeline/pipeline/cmd/publisher
 
 build-consumer:
 	@echo "Building consumer"
-	go build -o ./bin/consumer github.com/valerykalashnikov/streaming-pipeline/cmd/consumer
+	go build -o ./bin/consumer github.com/valerykalashnikov/streaming-pipeline/pipeline/cmd/consumer
 
 build-docker-all:
 	@echo "Building docker image for emitter"
